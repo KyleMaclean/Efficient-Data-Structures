@@ -1,0 +1,52 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\setlength{\parindent}{0em}
+\usepackage{dirtytalk}
+\usepackage[a4paper, total={6in, 10in}]{geometry}
+\usepackage{titlesec}
+\usepackage{fancyvrb}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{graphicx}
+
+\titleformat{\section}
+  {\normalfont\fontsize{12}{15}\bfseries}{\thesection}{1em}{}
+
+\begin{document}
+Kyle Maclean \\
+Priority Queues\\
+December 2021
+
+\section{Description of implementation}
+
+The code is presented in a single Python file, \texttt{pq1.py}. The user-facing functions are the first to be defined, and all of their helper functions are defined below all of them. For efficiency, functions that manipulate the heaps operate in-place. Therefore, they do not return a new heap, so the user must just continue to use the same heap that was passed in as argument to the manipulation function. \\
+We define the two datastructures unambiguously as \textit{uniparental binary heaps} and \textit{biparental binary heaps}. Since there are similarities between them, they are made to share the functions which operate on them to reduce code duplication. The \texttt{min} function is identical for both datastructures, but for the other four, a parameter, \texttt{parents} must be passed to them with a value either of \texttt{1} or \texttt{2} to describe how to interpret the heap (as uniparental or biparental, respectively) and how to perform the operation. \\
+The user-facing functions are wrappers for functions which also return a \texttt{time} value, which represents the number of recursions or iterations taken to perform the operation (used during the efficiency tests). The user-facing functions discard this value in order to provide a simple interface.
+
+\section{Results of testing}
+
+\begin{figure}
+     \centering
+     \begin{subfigure}[b]{0.8\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{images/Uniparental\_Binary\_Heap.png}
+         \caption{Note that the \texttt{max} function's empirical performance follows the bound tightly (the blue dots are underneath the orange dots).}
+         \label{fig:uniparental}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.8\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{images/Biparental\_Binary\_Heap.png}
+         \caption{Note that the scale of the \texttt{search} function's y-axis is double that of the \texttt{insert} and \texttt{extract} functions'. This is because the number of comparisons required is bounded by twice the square root of the number of elements. Of course, this constant factor is ignored when expressing asymptotic complexity with Big-Oh.}
+         \label{fig:biparental}
+     \end{subfigure}
+     \hfill
+        \caption{Plotting the performance of four operations for the two different parent-types of binary heaps. The \texttt{min} function is excluded because it is constant time for both types. The blue scattered dots represent randomised empirical measurements of the number of recursions/iterations that were performed on heaps of different sizes. The orange scattered dots represent the theoretical Big-Oh bound on the time the operations should take for heaps of given sizes.}
+        \label{fig:performance}
+\end{figure}
+
+Each of the five operations has a correctness and efficiency test that can be found in \texttt{pq2.py}. Each of these tests repeats the same procedure for each of the parent-types by parametrically assigning appropriate arguments and specialised functions. \\
+The correctness checks all assert expected outputs which have been constructed by hand. The validity checks are performed using the \texttt{is\_valid} function from \texttt{pq1.py}, which itself is tested in \texttt{pq2.py} using hard-coded, hand-validated heaps. The correctness checks for \texttt{insertion} and \texttt{extraction} also use randomly-generated heaps in addition to the hand-crafted test cases. \\
+The efficiency tests assert that the time taken for each operation is less than or equal to the appropriate function on the heap size, which are defined in \texttt{get\_time\_bound}. The function \texttt{test\_plot\_performance} generates the graphs that are displayed in Figure \ref{fig:performance}. The procedure it follows is to insert 1,000 random numbers into the two kinds of heaps. After every insertion, a search is performed to find the newly-inserted key. This allows an insertion with the appropriate number of ascending swaps to get the inserted element to the correct position and a search with the appropriate number of \say{steps} along the \say{columns} and \say{rows} of the upper-left triangular matrix in the case of biparental binary heaps, or, simply checking every value linearly in the case of a uniparental binary heap to find the key - of the heap at every size up to 1,000. Then, we find the maximum of every heap created from removing the last key 1,000 times. This allows checking for the maximum in a heap of every size up to 1,000. Then, we extract the minimum and merge the resulting sub-heaps to allow extracting from heaps of every size from 1,000 down.
+
+\end{document}
