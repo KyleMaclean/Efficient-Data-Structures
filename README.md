@@ -1,7 +1,7 @@
 # Efficient-Data-Structures
 
 Priority Queues
-- `pq.pdf` describes the implementation and testing results
+- `pq.pdf` describes the implementation and empirical correctness/efficiency testing results
 - `pq1.py` contains the implementation
 - `pq2.py` contains the tests
 
